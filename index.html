@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slide It !!</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=STIX+Two+Text:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=cute-3">
+</head>
+<body>
+  <div class="scene">
+    <canvas id="graph"></canvas>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Slide It !!</div>
+        <div class="panel-meta">
+          <button class="sound-toggle" id="soundToggle" type="button" aria-label="Sound" aria-pressed="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path class="speaker" d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z"/>
+              <path class="waves" d="M15.5 9.2a4 4 0 0 1 0 5.6M18 6.8a7.4 7.4 0 0 1 0 10.4"/>
+              <path class="mute" d="M15.5 9.5l5 5M20.5 9.5l-5 5"/>
+            </svg>
+          </button>
+          <div class="round-badge">Level <span id="roundNum">1</span></div>
+        </div>
+      </div>
+
+      <div class="status" id="statusMsg">Enter an equation and press Start</div>
+
+      <label class="eq-field" for="eqInput">
+        <span class="eq-label"><i>y</i>&nbsp;=</span>
+        <input type="text" id="eqInput" name="eqInput" placeholder="0.2x^2 - 3" autocomplete="off" spellcheck="false" />
+      </label>
+      <div class="eq-preview" id="eqPreview" aria-live="polite"></div>
+
+      <div class="actions">
+        <button id="startBtn" class="game-btn game-btn--primary">Start</button>
+        <button id="resetBtn" class="game-btn game-btn--secondary">Reset</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="result" hidden>
+      <div class="card result-card" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+        <svg class="result-face" viewBox="0 0 100 100" aria-hidden="true">
+          <rect x="10" y="10" width="80" height="80" rx="14" fill="#ffafcc" stroke="#3b2a4a" stroke-width="6"/>
+          <rect x="20" y="19" width="16" height="6" rx="3" fill="#fff" fill-opacity="0.85"/>
+          <ellipse cx="25" cy="60" rx="6.5" ry="4" fill="#ff78aa" fill-opacity="0.45"/>
+          <ellipse cx="75" cy="60" rx="6.5" ry="4" fill="#ff78aa" fill-opacity="0.45"/>
+          <g class="face-happy">
+            <path d="M29 48q6-8 12 0M59 48q6-8 12 0" fill="none" stroke="#3b2a4a" stroke-width="5" stroke-linecap="round"/>
+            <path d="M40 60q10 11 20 0" fill="#3b2a4a" stroke="#3b2a4a" stroke-width="4" stroke-linejoin="round"/>
+          </g>
+          <g class="face-worried">
+            <ellipse cx="36" cy="48" rx="4.5" ry="6" fill="#3b2a4a"/>
+            <ellipse cx="64" cy="48" rx="4.5" ry="6" fill="#3b2a4a"/>
+            <path d="M28 40l12-5M72 40l-12-5" fill="none" stroke="#3b2a4a" stroke-width="4" stroke-linecap="round"/>
+            <path d="M42 67q8-7 16 0" fill="none" stroke="#3b2a4a" stroke-width="4.5" stroke-linecap="round"/>
+          </g>
+        </svg>
+        <div class="result-title" id="resultTitle">Well done!</div>
+        <p class="result-text" id="resultText"></p>
+        <button id="resultPrimary" class="game-btn game-btn--primary game-btn--wide">Next level</button>
+      </div>
+    </div>
+
+    <!-- Main menu (id kept as startScreen: the trailer script hides it by that name) -->
+    <div class="menu" id="startScreen">
+      <div class="menu-left">
+        <svg class="menu-mascot" viewBox="0 0 100 100" aria-hidden="true">
+          <rect x="14" y="16" width="76" height="76" rx="12" fill="#000" fill-opacity="0.18"/>
+          <rect x="10" y="10" width="76" height="76" rx="12" fill="#ffafcc"/>
+          <rect x="19" y="19" width="58" height="38" rx="8.5" fill="#ffc8dd"/>
+          <rect x="22" y="19" width="15" height="6" rx="3" fill="#fff" fill-opacity="0.85"/>
+          <rect x="10" y="10" width="76" height="76" rx="12" fill="none" stroke="#3b2a4a" stroke-width="6"/>
+          <ellipse cx="25" cy="57" rx="6" ry="3.8" fill="#ff78aa" fill-opacity="0.45"/>
+          <ellipse cx="71" cy="57" rx="6" ry="3.8" fill="#ff78aa" fill-opacity="0.45"/>
+          <g class="mascot-eyes">
+            <ellipse cx="35" cy="46.5" rx="4" ry="5.7" fill="#3b2a4a"/>
+            <ellipse cx="61" cy="46.5" rx="4" ry="5.7" fill="#3b2a4a"/>
+            <circle cx="36.2" cy="44.2" r="1.4" fill="#fff"/>
+            <circle cx="62.2" cy="44.2" r="1.4" fill="#fff"/>
+          </g>
+          <path d="M42.5 62.6 Q48 68.2 53.5 62.6" fill="none" stroke="#3b2a4a" stroke-width="4.2" stroke-linecap="round"/>
+        </svg>
+
+        <h1 class="menu-title">Slide It !!</h1>
+        <p class="menu-tagline">A little cube, a sheet of graph paper, and whatever line you're brave enough to draw for it.</p>
+
+        <nav class="menu-buttons" aria-label="Main menu">
+          <button id="newGameBtn" class="game-btn game-btn--primary">New game</button>
+          <button id="creditsBtn" class="game-btn game-btn--secondary">Credits</button>
+          <button id="quitBtn" class="game-btn game-btn--secondary">Quit</button>
+        </nav>
+      </div>
+
+      <section class="menu-right" aria-labelledby="howToTitle">
+        <figure class="demo">
+          <img src="assets/demo.gif" alt="Gameplay: an equation is typed, the line appears, and the cube slides along it into the portal." />
+        </figure>
+        <h2 class="how-to-title" id="howToTitle">How to play</h2>
+        <ol class="how-to">
+          <li><span class="step">1</span>Type an equation. A line like <span class="math">−0.5<i>x</i> + 3</span>, or a parabola like <span class="math">0.2<i>x</i><sup>2</sup> − 3</span> to send the cube up a hill.</li>
+          <li><span class="step">2</span>Press <b>Start</b>. The cube drops onto your line and slides toward the portal, uphill or downhill.</li>
+          <li><span class="step">3</span>Your line has to pass under the cube and through the portal. Miss, and you get to try the same level again.</li>
+          <li><span class="step">4</span>Drag the graph to look around. <b>Reset</b> restarts the level.</li>
+        </ol>
+      </section>
+
+      <div class="menu-sheet" id="creditsSheet" hidden>
+        <div class="card sheet-card" role="dialog" aria-modal="true" aria-labelledby="creditsTitle">
+          <h2 class="sheet-title" id="creditsTitle">Credits</h2>
+          <dl class="credits">
+            <dt>Game</dt><dd>Slide It !!</dd>
+            <dt>Design &amp; code</dt><dd>Kaustubh</dd>
+            <dt>Fonts</dt><dd>Fredoka and STIX Two Text (Google Fonts)</dd>
+            <dt>Sound</dt><dd>Synthesised live with the Web Audio API</dd>
+            <dt>Built with</dt><dd>HTML, CSS and JavaScript</dd>
+          </dl>
+          <button class="game-btn game-btn--secondary game-btn--wide" data-close-sheet>Back</button>
+        </div>
+      </div>
+
+      <div class="menu-sheet" id="quitSheet" hidden>
+        <div class="card sheet-card" role="dialog" aria-modal="true" aria-labelledby="quitTitle">
+          <h2 class="sheet-title" id="quitTitle">Thanks for playing!</h2>
+          <p class="sheet-text">The cube will wait right here. You can close this tab, or head back to the menu.</p>
+          <button class="game-btn game-btn--secondary game-btn--wide" data-close-sheet>Back to menu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="game.js?v=cute-3"></script>
+</body>
+</html>

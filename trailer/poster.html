@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Slide It !! Poster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --thistle: #cdb4db;
+    --petal: #ffc8dd;
+    --pink: #ffafcc;
+    --icy: #bde0fe;
+    --sky: #a2d2ff;
+    --ink: #3b2a4a;
+    --paper: #fff3f8;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #1d1424; }
+  body { font-family: "Fredoka", sans-serif; }
+
+  #poster {
+    position: relative;
+    width: 630px;
+    height: 500px;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  #art {
+    position: absolute;
+    inset: 0;
+    width: 630px;
+    height: 500px;
+  }
+
+  /* left column: a card in the game's own panel style */
+  .card {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    width: 286px;
+    height: 452px;
+    padding: 22px 22px 24px;
+    display: flex;
+    flex-direction: column;
+    background: var(--thistle);
+    border: 4px solid var(--ink);
+    border-radius: 26px;
+    box-shadow: 0 7px 0 var(--ink), 0 18px 34px rgba(59, 42, 74, 0.25);
+  }
+  .badge {
+    align-self: flex-start;
+    padding: 5px 12px 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--sky);
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    box-shadow: 0 3px 0 var(--ink);
+  }
+  .title {
+    margin-top: 16px;
+    font-size: 70px;
+    font-weight: 700;
+    line-height: 0.95;
+    color: #ffffff;
+    -webkit-text-stroke: 6px var(--ink);
+    paint-order: stroke fill;
+    text-shadow: 0 6px 0 var(--ink);
+    letter-spacing: 0.01em;
+  }
+  .tagline {
+    margin-top: 16px;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  .equation {
+    margin-top: auto;
+    display: flex;
+    align-items: stretch;
+    height: 50px;
+    background: #ffffff;
+    border: 4px solid var(--ink);
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  .equation .y {
+    display: flex;
+    align-items: center;
+    padding: 0 13px;
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--pink);
+    border-right: 4px solid var(--ink);
+  }
+  .equation .expr {
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-size: 23px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .equation .caret {
+    width: 3px;
+    height: 24px;
+    margin-left: 3px;
+    border-radius: 2px;
+    background: var(--ink);
+  }
+  .cta {
+    position: relative;
+    margin-top: 14px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--pink);
+    border: 4px solid var(--ink);
+    border-radius: 16px;
+    box-shadow: 0 6px 0 var(--ink);
+  }
+  .cta::after {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 12px;
+    right: 12px;
+    height: 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+  }
+  .sub {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    opacity: 0.8;
+  }
+</style>
+</head>
+<body>
+  <div id="poster">
+    <canvas id="art"></canvas>
+    <div class="card">
+      <div class="badge">A math puzzle game</div>
+      <div class="title">Slide<br>It !!</div>
+      <div class="tagline">Draw a line. Slide the cube.<br>Reach the portal.</div>
+      <div class="equation"><span class="y">y =</span><span class="expr">0.2x² − 4<span class="caret"></span></span></div>
+      <div class="cta">Play free</div>
+      <div class="sub">right in your browser</div>
+    </div>
+  </div>
+
+<script>
+// Poster art: same cube, portal and palette as the game. Drawn on a canvas at
+// the device pixel ratio, so a 2x render is fully sharp.
+const COL = {
+  thistle: '#cdb4db', thistleDeep: '#b497c9', petal: '#ffc8dd', pink: '#ffafcc',
+  icy: '#bde0fe', sky: '#a2d2ff', ink: '#3b2a4a', paper: '#fff3f8'
+};
+const W = 630, H = 500;
+// ?layer=bg|portal|cube|title renders one piece on its own (transparent
+// apart from bg), aligned to the full frame, for rebuilding in Canva
+const LAYER = new URLSearchParams(location.search).get('layer') || 'full';
+const show = (name) => LAYER === 'full' || LAYER === name;
+if (LAYER !== 'full') {
+  document.documentElement.style.background = 'transparent';
+  document.body.style.background = 'transparent';
+  document.getElementById('poster').style.background = 'transparent';
+  const card = document.querySelector('.card');
+  if (LAYER === 'title') {
+    card.style.background = 'transparent';
+    card.style.border = '4px solid transparent';
+    card.style.boxShadow = 'none';
+    for (const child of card.children) if (!child.classList.contains('title')) child.style.visibility = 'hidden';
+  } else {
+    card.style.display = 'none';
+  }
+}
+const canvas = document.getElementById('art');
+const dpr = window.devicePixelRatio || 1;
+canvas.width = W * dpr;
+canvas.height = H * dpr;
+const c = canvas.getContext('2d');
+c.scale(dpr, dpr);
+
+function rrect(x, y, w, h, r) {
+  c.beginPath();
+  c.moveTo(x + r, y);
+  c.arcTo(x + w, y, x + w, y + h, r);
+  c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r);
+  c.arcTo(x, y, x + w, y, r);
+  c.closePath();
+}
+function circle(x, y, r) { c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); }
+
+function drawCube(x, y, s, angle) {
+  const r = s * 0.16;
+  c.save();
+  c.translate(x, y);
+  c.rotate(angle);
+  c.fillStyle = 'rgba(0,0,0,0.18)';
+  rrect(-s / 2 + s * 0.06, -s / 2 + s * 0.08, s, s, r); c.fill();
+  c.fillStyle = COL.pink; rrect(-s / 2, -s / 2, s, s, r); c.fill();
+  c.fillStyle = COL.petal; rrect(-s / 2 + s * 0.12, -s / 2 + s * 0.12, s * 0.76, s * 0.5, r * 0.7); c.fill();
+  c.fillStyle = 'rgba(255,255,255,0.85)'; rrect(-s / 2 + s * 0.16, -s / 2 + s * 0.12, s * 0.2, s * 0.08, s * 0.04); c.fill();
+  c.lineWidth = s * 0.08; c.strokeStyle = COL.ink; rrect(-s / 2, -s / 2, s, s, r); c.stroke();
+  // happy face
+  const eyeY = -s * 0.02, eyeDX = s * 0.17, mouthY = s * 0.22;
+  c.lineCap = 'round'; c.lineJoin = 'round';
+  c.fillStyle = 'rgba(255,120,170,0.45)';
+  for (const side of [-1, 1]) { c.beginPath(); c.ellipse(side * s * 0.3, s * 0.12, s * 0.08, s * 0.05, 0, 0, Math.PI * 2); c.fill(); }
+  c.strokeStyle = COL.ink; c.lineWidth = s * 0.055;
+  for (const side of [-1, 1]) { c.beginPath(); c.arc(side * eyeDX, eyeY + s * 0.05, s * 0.08, Math.PI * 1.1, Math.PI * 1.9); c.stroke(); }
+  c.fillStyle = COL.ink; c.beginPath(); c.arc(0, mouthY - s * 0.06, s * 0.15, 0, Math.PI); c.closePath(); c.fill();
+  c.fillStyle = '#ff7fa8'; c.beginPath(); c.ellipse(0, mouthY + s * 0.04, s * 0.07, s * 0.04, 0, 0, Math.PI * 2); c.fill();
+  c.restore();
+}
+
+function drawPortal(x, y, R, spin) {
+  const inner = R * 0.76;
+  c.save();
+  c.translate(x, y);
+  const glow = c.createRadialGradient(0, 0, R * 0.7, 0, 0, R * 1.9);
+  glow.addColorStop(0, 'rgba(205,180,219,0.75)');
+  glow.addColorStop(1, 'rgba(205,180,219,0)');
+  c.fillStyle = glow; circle(0, 0, R * 1.9); c.fill();
+  c.fillStyle = 'rgba(0,0,0,0.18)'; circle(R * 0.08, R * 0.1, R); c.fill();
+  c.fillStyle = COL.thistle; circle(0, 0, R); c.fill();
+  c.fillStyle = COL.petal;
+  for (let k = 0; k < 8; k++) {
+    const a = spin * 0.3 + (k / 8) * Math.PI * 2;
+    circle(Math.cos(a) * (R + inner) / 2, Math.sin(a) * (R + inner) / 2, R * 0.06); c.fill();
+  }
+  c.save();
+  circle(0, 0, inner); c.clip();
+  c.fillStyle = COL.ink; c.fillRect(-inner, -inner, inner * 2, inner * 2);
+  c.rotate(-spin);
+  const arms = [COL.sky, COL.pink, COL.icy, COL.petal];
+  c.lineCap = 'round'; c.lineWidth = inner * 0.24;
+  arms.forEach((col, k) => {
+    const base = (k / arms.length) * Math.PI * 2;
+    c.strokeStyle = col; c.beginPath();
+    for (let s = 0; s <= 1.0001; s += 0.04) {
+      const r = inner * (0.14 + 0.95 * s), a = base + s * 2.4;
+      if (s === 0) c.moveTo(Math.cos(a) * r, Math.sin(a) * r); else c.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+    }
+    c.stroke();
+  });
+  const core = c.createRadialGradient(0, 0, 0, 0, 0, inner * 0.32);
+  core.addColorStop(0, COL.ink); core.addColorStop(0.7, 'rgba(59,42,74,0.9)'); core.addColorStop(1, 'rgba(59,42,74,0)');
+  c.fillStyle = core; circle(0, 0, inner * 0.32); c.fill();
+  c.restore();
+  c.strokeStyle = COL.ink; c.lineWidth = R * 0.08;
+  circle(0, 0, inner); c.stroke(); circle(0, 0, R); c.stroke();
+  c.strokeStyle = 'rgba(255,255,255,0.8)'; c.lineWidth = R * 0.07; c.lineCap = 'round';
+  c.beginPath(); c.arc(0, 0, R * 0.88, Math.PI * 1.1, Math.PI * 1.4); c.stroke();
+  c.restore();
+}
+
+// graph paper with the origin under the valley of the curve
+const U = 26;
+const OX = 470, OY = 322;
+if (show('bg')) {
+c.fillStyle = COL.paper; c.fillRect(0, 0, W, H);
+for (let k = -30; k <= 30; k++) {
+  const major = k % 5 === 0;
+  c.strokeStyle = major ? COL.thistleDeep : COL.sky;
+  c.lineWidth = major ? 1.6 : 1;
+  const x = OX + k * U, y = OY + k * U;
+  if (x > -2 && x < W + 2) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, H); c.stroke(); }
+  if (y > -2 && y < H + 2) { c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke(); }
+}
+c.strokeStyle = 'rgba(59,42,74,0.75)'; c.lineWidth = 2.5;
+c.beginPath(); c.moveTo(0, OY); c.lineTo(W, OY); c.moveTo(OX, 0); c.lineTo(OX, H); c.stroke();
+// a few y-axis numbers in the game's chip style
+c.font = '600 11px Fredoka, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+for (const n of [4, 2, -2]) {
+  const x = OX - 14, y = OY - n * U, label = String(n);
+  const w = c.measureText(label).width + 8;
+  c.fillStyle = 'rgba(255,255,255,0.92)'; rrect(x - w / 2, y - 8, w, 16, 5); c.fill();
+  c.fillStyle = COL.ink; c.fillText(label, x, y + 0.5);
+}
+}
+
+// the ramp is exactly y = 0.2x² − 4 on this grid (the equation in the card)
+const A = 0.2 / U;
+const VX = OX, VY = OY + 4 * U;
+const f = (x) => VY - A * (x - VX) ** 2;           // screen y
+const fp = (x) => -2 * A * (x - VX);               // screen slope
+if (show('bg')) {
+c.save();
+c.strokeStyle = COL.ink; c.lineWidth = 5; c.lineCap = 'round'; c.lineJoin = 'round';
+c.beginPath();
+for (let x = 300; x <= W + 10; x += 2) { if (x === 300) c.moveTo(x, f(x)); else c.lineTo(x, f(x)); }
+c.stroke();
+c.restore();
+}
+
+// portal at the top of the right-hand climb
+const PX = 580;
+if (show('portal')) drawPortal(PX, f(PX) - 6, 44, 0.9);
+
+// the cube sliding down the left slope, with speed streaks behind it
+const CX = 418, S = 60;
+const slope = fp(CX);
+const n = Math.hypot(1, slope);
+const cx = CX + (slope / n) * (S / 2);
+const cy = f(CX) - (1 / n) * (S / 2);
+const ang = Math.atan(slope);
+if (show('cube')) {
+c.save();
+c.strokeStyle = COL.ink; c.lineCap = 'round';
+const tx = 1 / n, ty = slope / n;   // downhill direction along the ramp
+[[-62, -14, 3.5, 30], [-74, 2, 3, 22], [-58, 18, 3.5, 26]].forEach(([back, side, w, len]) => {
+  const bx = cx + tx * back + -ty * side * 0.6, by = cy + ty * back + tx * side * 0.6;
+  c.lineWidth = w; c.globalAlpha = 0.65;
+  c.beginPath(); c.moveTo(bx, by); c.lineTo(bx - tx * len, by - ty * len); c.stroke();
+});
+c.restore();
+drawCube(cx, cy, S, ang);
+}
+
+// soft vignette
+if (show('bg')) {
+const vig = c.createRadialGradient(W / 2, H / 2, H * 0.45, W / 2, H / 2, H * 0.95);
+vig.addColorStop(0, 'rgba(59,42,74,0)');
+vig.addColorStop(1, 'rgba(59,42,74,0.16)');
+c.fillStyle = vig; c.fillRect(0, 0, W, H);
+}
+
+document.fonts.ready.then(() => { window.__posterReady = true; });
+</script>
+</body>
+</html>

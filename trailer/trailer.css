@@ -1,0 +1,271 @@
+:root {
+  --thistle: #cdb4db;
+  --petal: #ffc8dd;
+  --pink: #ffafcc;
+  --icy: #bde0fe;
+  --sky: #a2d2ff;
+  --ink: #3b2a4a;
+  --paper: #fff3f8;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #1d1424;
+  font-family: "Fredoka", sans-serif;
+}
+
+/* the 1920x1080 frame; in preview it's scaled to fit the window */
+#stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: var(--paper);
+  transform-origin: 0 0;
+}
+
+#gameWrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+#game {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1280px;
+  height: 720px;
+  border: 0;
+  transform-origin: 0 0;
+  background: var(--paper);
+}
+
+#fx, #wipe {
+  position: absolute;
+  inset: 0;
+  width: 1920px;
+  height: 1080px;
+  pointer-events: none;
+}
+
+.layer {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.outlined {
+  color: #ffffff;
+  -webkit-text-stroke: 7px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0 10px 0 var(--ink);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+#story {
+  left: 0;
+  right: 0;
+  top: 820px;
+  text-align: center;
+  font-size: 72px;
+  font-weight: 600;
+  color: var(--ink);
+  text-shadow:
+    0 0 6px var(--paper), 0 0 10px var(--paper), 0 0 16px var(--paper),
+    0 0 24px var(--paper), 0 0 40px var(--paper);
+}
+
+#big, #feature {
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35em;
+  font-size: 168px;
+  line-height: 1;
+}
+
+#big span, #feature span {
+  display: inline-block;
+  color: #ffffff;
+  -webkit-text-stroke: 8px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0 12px 0 var(--ink);
+  font-weight: 700;
+}
+
+#feature {
+  font-size: 132px;
+}
+
+#feature .pill {
+  padding: 18px 56px 30px;
+  background: var(--thistle);
+  border: 7px solid var(--ink);
+  border-radius: 48px;
+  box-shadow: 0 14px 0 var(--ink);
+  -webkit-text-stroke: 7px var(--ink);
+}
+
+#caption {
+  left: 72px;
+  bottom: 72px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 34px 20px 26px;
+  font-size: 46px;
+  font-weight: 600;
+  color: var(--ink);
+  background: #ffffff;
+  border: 5px solid var(--ink);
+  border-radius: 24px;
+  box-shadow: 0 9px 0 var(--ink);
+}
+
+#caption .dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--pink);
+  border: 4px solid var(--ink);
+}
+
+#logo {
+  left: 0;
+  right: 0;
+  top: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#logoTitle {
+  font-size: 196px;
+  line-height: 1;
+  color: #ffffff;
+  -webkit-text-stroke: 9px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0 14px 0 var(--ink);
+  font-weight: 700;
+}
+
+#tagline {
+  margin-top: 34px;
+  font-size: 52px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+#cta {
+  margin-top: 40px;
+  padding: 16px 48px 20px;
+  font-size: 44px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  background: var(--pink);
+  border: 6px solid var(--ink);
+  border-radius: 26px;
+  box-shadow: 0 10px 0 var(--ink);
+}
+
+#vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(59, 42, 74, 0) 60%, rgba(59, 42, 74, 0.16) 100%);
+}
+
+#fade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: var(--paper);
+  opacity: 0;
+}
+
+/* ---------- 9:16 reel layout ---------- */
+
+.reel #stage {
+  width: 1080px;
+  height: 1920px;
+}
+
+.reel #story {
+  left: 70px;
+  right: 70px;
+  font-size: 66px;
+  line-height: 1.2;
+}
+
+.reel #big {
+  flex-direction: column;
+  gap: 0.04em;
+  bottom: 260px;
+}
+
+.reel #feature {
+  font-size: 86px;
+  bottom: 160px;
+}
+
+.reel #feature .pill {
+  max-width: 900px;
+  text-align: center;
+  line-height: 1.08;
+  padding: 20px 48px 30px;
+}
+
+.reel #caption {
+  font-size: 44px;
+  white-space: nowrap;
+}
+
+.reel #logo {
+  top: 1000px;
+}
+
+.reel #logoTitle {
+  font-size: 168px;
+}
+
+.reel #tagline {
+  max-width: 720px;
+  text-align: center;
+  font-size: 50px;
+  line-height: 1.25;
+}
+
+.reel #cta {
+  font-size: 42px;
+}
+
+#playPreview {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px 40px;
+  font-family: "Fredoka", sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--pink);
+  border: 4px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: 0 6px 0 var(--ink);
+  cursor: pointer;
+}

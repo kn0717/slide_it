@@ -1,0 +1,26 @@
+{
+ "portal": {
+  "left": 497.0,
+  "top": 243.5,
+  "width": 133.0,
+  "height": 166.5
+ },
+ "cube": {
+  "left": 357.0,
+  "top": 313.5,
+  "width": 122.5,
+  "height": 114.5
+ },
+ "title": {
+  "left": 41.5,
+  "top": 95.5,
+  "width": 165.0,
+  "height": 132.5
+ },
+ "bg": {
+  "left": 0,
+  "top": 0,
+  "width": 630.0,
+  "height": 500.0
+ }
+}

@@ -1,0 +1,15 @@
+# Node dependencies (trailer build tooling) — reinstall with `npm install`
+node_modules/
+
+# Godot editor cache and per-asset import metadata — regenerated on open
+.godot/
+*.import
+
+# Build/generated output — regenerate rather than track
+trailer/music.wav
+slide-it-itch.zip
+
+# Python
+__pycache__/
+*.pyc
+portfolio-assets/
