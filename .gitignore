@@ -31,3 +31,6 @@ trailer/
 project.godot
 scenes/
 scripts/
+
+# local Claude Code tooling config, not part of the game
+.claude/
