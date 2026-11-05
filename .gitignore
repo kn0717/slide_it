@@ -13,3 +13,21 @@ slide-it-itch.zip
 __pycache__/
 *.pyc
 portfolio-assets/
+
+# Promotional/store-page material and the trailer build pipeline — kept
+# locally, not part of the game's code
+Slide It Poster.png
+Slide It Poster@2x.png
+Slide It Reel.mp4
+Slide It Trailer.mp4
+assets/ball.png
+assets/ball.webp
+assets/portal.webp
+itch-assets/
+screenshots/
+trailer/
+
+# an abandoned Godot port — this is the HTML game, not that
+project.godot
+scenes/
+scripts/
